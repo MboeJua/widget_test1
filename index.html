@@ -11,10 +11,10 @@
      <!-- Raghim AI Chat Widget - Copy and paste this entire block into your HTML page -->
     <style>
 
-        #rag-widget-176cfbef.rag-widget-modern {
+        #rag-widget-d97e1386.rag-widget-modern {
             font-family: Inter, sans-serif;
             font-size: 14px;
-            background-color: #F5F0E8;
+            background-color: #afcfde;
             color: #1a202c;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -29,7 +29,7 @@
         }
         
         .rag-widget-header {
-            background-color: #2C5C61;
+            background-color: #91ff0a;
             color: white;
             padding: 10px;
             display: flex;
@@ -71,7 +71,7 @@
         }
         
         .rag-message.user {
-            background-color: #2C5C61;
+            background-color: #91ff0a;
             color: white;
             align-self: flex-end;
             margin-left: auto;
@@ -99,7 +99,7 @@
         }
         
         .rag-widget-input button {
-            background-color: #2C5C61;
+            background-color: #91ff0a;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -108,14 +108,14 @@
             cursor: pointer;
         }
         
-        #rag-widget-176cfbef .rag-widget-footer {
+        #rag-widget-d97e1386 .rag-widget-footer {
             padding: 6px 12px;
             text-align: right;
             border-top: 1px solid #f0f0f0;
             background-color: #fafafa;
         }
         
-        #rag-widget-176cfbef .rag-powered-by {
+        #rag-widget-d97e1386 .rag-powered-by {
             font-size: 10px;
             color: #999;
             text-decoration: none;
@@ -123,17 +123,17 @@
             transition: color 0.2s;
         }
         
-        #rag-widget-176cfbef .rag-powered-by:hover {
-            color: #2C5C61;
+        #rag-widget-d97e1386 .rag-powered-by:hover {
+            color: #91ff0a;
         }
         
-        #rag-widget-176cfbef .rag-powered-by strong {
+        #rag-widget-d97e1386 .rag-powered-by strong {
             font-weight: 600;
             color: #666;
         }
         
-        #rag-widget-176cfbef .rag-powered-by:hover strong {
-            color: #2C5C61;
+        #rag-widget-d97e1386 .rag-powered-by:hover strong {
+            color: #91ff0a;
         }
         
         .rag-typing-indicator {
@@ -150,7 +150,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background-color: #2C5C61;
+            background-color: #91ff0a;
             color: white;
             border: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -181,21 +181,21 @@
     </style>
 
 <!-- Floating Toggle Button (shown when widget is minimized) -->
-<button id="rag-widget-176cfbef-toggle-btn" class="rag-widget-toggle-btn" style="display: flex;">
+<button id="rag-widget-d97e1386-toggle-btn" class="rag-widget-toggle-btn" style="display: flex;">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="currentColor"/>
     </svg>
 </button>
 
-<div id="rag-widget-176cfbef" class="rag-widget-modern" style="display: none;">
+<div id="rag-widget-d97e1386" class="rag-widget-modern" style="display: none;">
         <div class="rag-widget-header">
-            <h3>Collections_test</h3>
+            <h3>test_github</h3>
             <div class="rag-widget-controls">
             <button class="rag-minimize-btn">−</button>
             <button class="rag-close-btn">×</button>
             </div>
         </div>
-    <div class="rag-widget-messages" id="rag-widget-176cfbef-messages">
+    <div class="rag-widget-messages" id="rag-widget-d97e1386-messages">
         <div class="rag-message assistant">Hello! I'm ready to be of service.</div>
         </div>
         <div class="rag-widget-input">
@@ -203,7 +203,7 @@
         <button class="rag-send-btn">Send</button>
     </div>
     <div class="rag-widget-footer">
-        <a href="https://www.raghim.com" target="_blank" rel="noopener noreferrer" class="rag-powered-by">
+        <a href="https://raghim.com" target="_blank" rel="noopener noreferrer" class="rag-powered-by">
             Powered by <strong>Raghim AI</strong>
         </a>
         </div>
@@ -225,9 +225,9 @@
                     
                 // Use the configured backend URL with mixed content bypass support
                 this.apiUrl = "https://app.raghim.com/api";
-                this.embedToken = "BzREk28zIE8_GREtgNZgq5r9QjUpyeevyRCWSEpnnCE";
-                this.widgetId = "176cfbef-3650-43ce-a3b4-9e6901f06d49";
-                this.features = {"show_sources": true, "enable_history": true, "show_typing_indicator": true, "enable_file_upload": false, "show_collection_switcher": false, "enable_feedback": true, "show_timestamps": false, "enable_search": true, "enable_handoff": true};
+                this.embedToken = "OPR6xcGIXW1uosYVmzZbzGCTfq068BADcnkRLf9w7qI";
+                this.widgetId = "d97e1386-5016-4bd1-ba82-51b8cc0f9f0b";
+                this.features = {"show_sources": false, "enable_history": true, "show_typing_indicator": true, "enable_file_upload": false, "show_collection_switcher": false, "enable_feedback": true, "show_timestamps": false, "enable_search": true, "enable_handoff": true};
                 this.conversationId = null; // Track conversation ID for history
                 this.isSending = false; // Add debouncing flag
                 this.lastMessageTime = 0; // Add timestamp tracking
@@ -286,7 +286,7 @@
                 // Check if human agent is active - if so, skip API call
                 if (this.conversationId) {
                     try {
-                        const statusResponse = await fetch(`${this.apiUrl}/live-chat/widget/conversation/${this.conversationId}/messages`);
+                        const statusResponse = await fetch(`${this.apiUrl}/api/live-chat/widget/conversation/${this.conversationId}/messages`);
                         if (statusResponse.ok) {
                             const statusData = await statusResponse.json();
                             if (statusData.status === 'human_taken') {
@@ -653,10 +653,10 @@
         // Initialize widget when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
-                new RAGChatWidget('rag-widget-176cfbef');
+                new RAGChatWidget('rag-widget-d97e1386');
             });
         } else {
-            new RAGChatWidget('rag-widget-176cfbef');
+            new RAGChatWidget('rag-widget-d97e1386');
         }
         })();
         
