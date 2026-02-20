@@ -8,7 +8,7 @@
    <body>
      <h1>Widget test</h1>
      <!-- Paste the full HTML embed block here -->
-     <!-- Raghim AI Chat Widget - Copy and paste this entire block into your HTML page -->
+      <!-- Raghim AI Chat Widget - Copy and paste this entire block into your HTML page -->
     <style>
 
         #rag-widget-d97e1386.rag-widget-modern {
@@ -282,24 +282,8 @@
                 this.isSending = true;
                 this.addMessage(message, 'user');
                 this.messageInput.value = '';
-                
-                // Check if human agent is active - if so, skip API call
-                if (this.conversationId) {
-                    try {
-                        const statusResponse = await fetch(`${this.apiUrl}/live-chat/widget/conversation/${this.conversationId}/messages`);
-                        if (statusResponse.ok) {
-                            const statusData = await statusResponse.json();
-                            if (statusData.status === 'human_taken') {
-                                console.log('Human agent active - skipping API call');
-                                this.isSending = false;
-                                return;
-                            }
-                        }
-                    } catch (error) {
-                        console.log('Could not check conversation status, proceeding with API call');
-                    }
-                }
-                
+
+                // Always send message to backend so it is saved and visible to the agent (even when human_taken)
                 if (this.features.show_typing_indicator) {
                     this.showTypingIndicator();
                 }
