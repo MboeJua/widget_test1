@@ -286,7 +286,7 @@
                 // Check if human agent is active - if so, skip API call
                 if (this.conversationId) {
                     try {
-                        const statusResponse = await fetch(`${this.apiUrl}/api/live-chat/widget/conversation/${this.conversationId}/messages`);
+                        const statusResponse = await fetch(`${this.apiUrl}/live-chat/widget/conversation/${this.conversationId}/messages`);
                         if (statusResponse.ok) {
                             const statusData = await statusResponse.json();
                             if (statusData.status === 'human_taken') {
