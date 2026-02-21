@@ -634,7 +634,7 @@
                 if (this.pendingUserMessage) {
                     const last = messages[messages.length - 1];
                     if (!last || last.role !== 'user' || last.content !== this.pendingUserMessage) {
-                        messages = [...messages, { role: 'user', content: this.pendingUserMessage };
+                        messages = [...messages, { role: 'user', content: this.pendingUserMessage }];
                     } else {
                         this.pendingUserMessage = null;
                     }
