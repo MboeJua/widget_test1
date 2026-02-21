@@ -616,8 +616,11 @@
                     if (response.ok) {
                         const data = await response.json();
                         const messages = Array.isArray(data?.messages) ? data.messages : [];
-                        this.updateMessagesFromServer(messages, data?.status, data?.agent_joined_at, data?.session_ended_at);
-                        this.lastMessageCount = messages.length;
+                        // Skip applying server state while we're sending; next poll after stream ends will sync
+                        if (!this.isSending) {
+                            this.updateMessagesFromServer(messages, data?.status, data?.agent_joined_at, data?.session_ended_at);
+                            this.lastMessageCount = messages.length;
+                        }
                     }
                 } catch (error) {
                     console.error('Error fetching agent messages:', error);
