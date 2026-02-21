@@ -150,6 +150,17 @@
             color: #4A7F85;
         }
         
+        .rag-session-ended-bar {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 12px;
+            font-style: italic;
+            color: #666;
+            background: #f0f0f0;
+            border-top: 1px solid #e0e0e0;
+        }
+        
         .rag-widget-toggle-btn {
             position: fixed;
             bottom: 20px;
@@ -252,6 +263,7 @@
                     this.minimizeButton = this.widgetElement.querySelector('.rag-minimize-btn');
                     this.closeButton = this.widgetElement.querySelector('.rag-close-btn');
                     this.toggleButton = document.getElementById(this.widgetElementId + '-toggle-btn');
+                    this.sessionEndedBar = this.widgetElement.querySelector('.rag-session-ended-bar') || document.getElementById(this.widgetElementId + '-session-ended');
                 
                     if (!this.messageContainer || !this.messageInput || !this.sendButton) {
                         console.error('Widget elements not found');
@@ -649,7 +661,9 @@
                 if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
                     this.addMessage('An agent has joined the conversation.', 'system', null, true);
                 }
-                if (status === 'completed' || sessionEndedAt) {
+                if (this.sessionEndedBar) {
+                    this.sessionEndedBar.style.display = (status === 'completed' || sessionEndedAt) ? 'block' : 'none';
+                } else if (status === 'completed' || sessionEndedAt) {
                     this.addMessage('This session has ended.', 'system', null, true);
                 }
                 if (this.messageContainer && (wasNearBottom || hadNewMessages)) {
