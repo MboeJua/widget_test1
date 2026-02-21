@@ -413,7 +413,6 @@
                                                 break;
                                             
                                             case 'human_agent_active':
-                                                this.addMessage(data.message, 'assistant');
                                                 break;
                                             
                                             case 'error':
@@ -516,7 +515,7 @@
                 }
             }
             
-            addMessage(content, role, sources = null) {
+            addMessage(content, role, sources = null, skipAutoScroll = false) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `rag-message ${role}`;
                 messageDiv.textContent = content;
@@ -529,7 +528,7 @@
                 }
                 
                 this.messageContainer.appendChild(messageDiv);
-                this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
+                if (!skipAutoScroll) this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
             }
             
             showTypingIndicator() {
@@ -625,26 +624,32 @@
             
             // Notifications driven by agent actions (Accept / Close Session in dashboard), not by visitor messages
             updateMessagesFromServer(messages, status, agentJoinedAt, sessionEndedAt) {
+                const wasNearBottom = this.messageContainer && (this.messageContainer.scrollHeight - this.messageContainer.scrollTop - this.messageContainer.clientHeight) < 120;
+                const hadNewMessages = messages.length > this.lastMessageCount;
                 this.messageContainer.innerHTML = '';
                 let shownAgentJoined = false;
                 const useExplicitAgentJoined = !!agentJoinedAt;
                 
                 messages.forEach(msg => {
                     const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
-                    if (!useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
-                        this.addMessage('An agent has joined the conversation.', 'system');
+                    if (useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
+                        this.addMessage('An agent has joined the conversation.', 'system', null, true);
+                        shownAgentJoined = true;
+                    } else if (!useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
+                        this.addMessage('An agent has joined the conversation.', 'system', null, true);
                         shownAgentJoined = true;
                     }
-                    this.addMessage(msg.content, role);
+                    this.addMessage(msg.content, role, null, true);
                 });
                 if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
-                    this.addMessage('An agent has joined the conversation.', 'system');
-                    shownAgentJoined = true;
+                    this.addMessage('An agent has joined the conversation.', 'system', null, true);
                 }
                 if (status === 'completed' || sessionEndedAt) {
-                    this.addMessage('This session has ended.', 'system');
+                    this.addMessage('This session has ended.', 'system', null, true);
                 }
-                this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
+                if (this.messageContainer && (wasNearBottom || hadNewMessages)) {
+                    this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
+                }
             }
         }
         
