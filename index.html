@@ -216,7 +216,6 @@
     <div class="rag-widget-messages" id="rag-widget-d97e1386-messages">
         <div class="rag-message assistant">Hello! I'm ready to be of service.</div>
         </div>
-        <div class="rag-session-ended-bar" id="rag-widget-d97e1386-session-ended" style="display: none;">This session has ended.</div>
         <div class="rag-widget-input">
         <input type="text" class="rag-message-input" placeholder="Type your message..." />
         <button class="rag-send-btn">Send</button>
@@ -252,7 +251,6 @@
                 this.lastMessageTime = 0; // Add timestamp tracking
                 this.pollingInterval = null; // Track polling interval
                 this.lastMessageCount = 0; // Track message count for polling
-                this.lastMessageCountWhenSessionEnded = null; // Hide "session ended" once user continues (message count increases)
                 console.log('Widget initialized with API URL:', this.apiUrl);
                 console.log('Widget initialized with embed token:', this.embedToken);
                 this.init();
@@ -265,7 +263,6 @@
                     this.minimizeButton = this.widgetElement.querySelector('.rag-minimize-btn');
                     this.closeButton = this.widgetElement.querySelector('.rag-close-btn');
                     this.toggleButton = document.getElementById(this.widgetElementId + '-toggle-btn');
-                    this.sessionEndedBar = this.widgetElement.querySelector('.rag-session-ended-bar') || document.getElementById(this.widgetElementId + '-session-ended');
                 
                     if (!this.messageContainer || !this.messageInput || !this.sendButton) {
                         console.error('Widget elements not found');
@@ -650,7 +647,7 @@
                 const useExplicitAgentJoined = !!agentJoinedAt;
                 
                 messages.forEach(msg => {
-                    const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
+                    const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : msg.role === 'system' ? 'system' : 'agent';
                     if (useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
                         this.addMessage('An agent has joined the conversation.', 'system', null, true);
                         shownAgentJoined = true;
@@ -662,18 +659,6 @@
                 });
                 if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
                     this.addMessage('An agent has joined the conversation.', 'system', null, true);
-                }
-                if (this.sessionEndedBar) {
-                    const sessionEnded = status === 'completed' || sessionEndedAt;
-                    if (sessionEnded) {
-                        if (this.lastMessageCountWhenSessionEnded == null) this.lastMessageCountWhenSessionEnded = messages.length;
-                        this.sessionEndedBar.style.display = messages.length <= this.lastMessageCountWhenSessionEnded ? 'block' : 'none';
-                    } else {
-                        this.lastMessageCountWhenSessionEnded = null;
-                        this.sessionEndedBar.style.display = 'none';
-                    }
-                } else if (status === 'completed' || sessionEndedAt) {
-                    this.addMessage('This session has ended.', 'system', null, true);
                 }
                 if (this.messageContainer && (wasNearBottom || hadNewMessages)) {
                     this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
