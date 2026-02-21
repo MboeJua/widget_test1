@@ -8,7 +8,7 @@
    <body>
      <h1>Widget test</h1>
      <!-- Paste the full HTML embed block here -->
-      <!-- Raghim AI Chat Widget - Copy and paste this entire block into your HTML page -->
+     <!-- Raghim AI Chat Widget - Copy and paste this entire block into your HTML page -->
     <style>
 
         #rag-widget-d97e1386.rag-widget-modern {
@@ -83,15 +83,14 @@
             border: 1px solid #e0e0e0;
             align-self: flex-start;
         }
-       
+        
         .rag-message.agent {
             background-color: white;
             color: #1a202c;
             border: 1px solid #e0e0e0;
             align-self: flex-start;
-         }
-       
-       
+        }
+        
         .rag-widget-input {
             display: flex;
             padding: 10px;
@@ -616,11 +615,8 @@
                     if (response.ok) {
                         const data = await response.json();
                         if (data?.messages && Array.isArray(data.messages)) {
-                            // Only update if we have new messages
-                            if (data.messages.length > this.lastMessageCount) {
-                                this.updateMessagesFromServer(data.messages);
-                                this.lastMessageCount = data.messages.length;
-                            }
+                            this.updateMessagesFromServer(data.messages, data.status, data.agent_joined_at, data.session_ended_at);
+                            this.lastMessageCount = data.messages.length;
                         }
                     }
                 } catch (error) {
@@ -628,16 +624,29 @@
                 }
             }
             
-            updateMessagesFromServer(messages) {
-                // Clear existing messages and rebuild from server
+            updateMessagesFromServer(messages, status, agentJoinedAt, sessionEndedAt) {
                 this.messageContainer.innerHTML = '';
+                let shownAgentJoined = false;
+                const useExplicitAgentJoined = !!agentJoinedAt;
                 
                 messages.forEach(msg => {
                     const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
+                    if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
+                        this.addMessage('An agent has joined the conversation.', 'system');
+                        shownAgentJoined = true;
+                    } else if (!useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
+                        this.addMessage('An agent has joined the conversation.', 'system');
+                        shownAgentJoined = true;
+                    }
                     this.addMessage(msg.content, role);
                 });
-                
-                // Scroll to bottom
+                if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
+                    this.addMessage('An agent has joined the conversation.', 'system');
+                    shownAgentJoined = true;
+                }
+                if (status === 'completed' || sessionEndedAt) {
+                    this.addMessage('This session has ended.', 'system');
+                }
                 this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
             }
         }
