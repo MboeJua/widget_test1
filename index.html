@@ -240,6 +240,8 @@
                 this.lastMessageTime = 0; // Add timestamp tracking
                 this.pollingInterval = null; // Track polling interval
                 this.lastMessageCount = 0; // Track message count for polling
+                this.pendingMessageCount = 0; // Skip poll overwrite until server has our sent message
+                this.sessionEndedAfterMessageIndex = null; // Fixed position for "This session has ended"
                 console.log('Widget initialized with API URL:', this.apiUrl);
                 console.log('Widget initialized with embed token:', this.embedToken);
                 this.init();
@@ -287,6 +289,7 @@
                 this.lastMessageTime = now;
                 
                 this.isSending = true;
+                this.pendingMessageCount = (this.pendingMessageCount || 0) + 1;
                 this.addMessage(message, 'user');
                 this.messageInput.value = '';
 
@@ -616,6 +619,7 @@
                         const messages = Array.isArray(data?.messages) ? data.messages : [];
                         this.updateMessagesFromServer(messages, data?.status, data?.agent_joined_at, data?.session_ended_at);
                         this.lastMessageCount = messages.length;
+                        this.pendingMessageCount = 0;
                     }
                 } catch (error) {
                     console.error('Error fetching agent messages:', error);
@@ -624,13 +628,22 @@
             
             // Notifications driven by agent actions (Accept / Close Session in dashboard), not by visitor messages
             updateMessagesFromServer(messages, status, agentJoinedAt, sessionEndedAt) {
+                if (this.pendingMessageCount > 0 && messages.length <= this.lastMessageCount) {
+                    return;
+                }
                 const wasNearBottom = this.messageContainer && (this.messageContainer.scrollHeight - this.messageContainer.scrollTop - this.messageContainer.clientHeight) < 120;
                 const hadNewMessages = messages.length > this.lastMessageCount;
+                if (sessionEndedAt || status === 'completed') {
+                    if (this.sessionEndedAfterMessageIndex == null) this.sessionEndedAfterMessageIndex = messages.length;
+                }
+                const sessionEndIndex = this.sessionEndedAfterMessageIndex != null ? Math.min(this.sessionEndedAfterMessageIndex, messages.length) : messages.length;
+                const messagesBeforeEnd = messages.slice(0, sessionEndIndex);
+                const messagesAfterEnd = messages.slice(sessionEndIndex);
                 this.messageContainer.innerHTML = '';
                 let shownAgentJoined = false;
                 const useExplicitAgentJoined = !!agentJoinedAt;
                 
-                messages.forEach(msg => {
+                messagesBeforeEnd.forEach(msg => {
                     const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
                     if (useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
                         this.addMessage('An agent has joined the conversation.', 'system', null, true);
@@ -644,9 +657,13 @@
                 if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
                     this.addMessage('An agent has joined the conversation.', 'system', null, true);
                 }
-                if (status === 'completed' || sessionEndedAt) {
+                if (this.sessionEndedAfterMessageIndex != null) {
                     this.addMessage('This session has ended.', 'system', null, true);
                 }
+                messagesAfterEnd.forEach(msg => {
+                    const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
+                    this.addMessage(msg.content, role, null, true);
+                });
                 if (this.messageContainer && (wasNearBottom || hadNewMessages)) {
                     this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
                 }
