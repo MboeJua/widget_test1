@@ -216,6 +216,7 @@
     <div class="rag-widget-messages" id="rag-widget-d97e1386-messages">
         <div class="rag-message assistant">Hello! I'm ready to be of service.</div>
         </div>
+        <div class="rag-session-ended-bar" id="rag-widget-d97e1386-session-ended" style="display: none;">This session has ended.</div>
         <div class="rag-widget-input">
         <input type="text" class="rag-message-input" placeholder="Type your message..." />
         <button class="rag-send-btn">Send</button>
@@ -251,6 +252,7 @@
                 this.lastMessageTime = 0; // Add timestamp tracking
                 this.pollingInterval = null; // Track polling interval
                 this.lastMessageCount = 0; // Track message count for polling
+                this.lastMessageCountWhenSessionEnded = null; // Hide "session ended" once user continues (message count increases)
                 console.log('Widget initialized with API URL:', this.apiUrl);
                 console.log('Widget initialized with embed token:', this.embedToken);
                 this.init();
@@ -662,7 +664,14 @@
                     this.addMessage('An agent has joined the conversation.', 'system', null, true);
                 }
                 if (this.sessionEndedBar) {
-                    this.sessionEndedBar.style.display = (status === 'completed' || sessionEndedAt) ? 'block' : 'none';
+                    const sessionEnded = status === 'completed' || sessionEndedAt;
+                    if (sessionEnded) {
+                        if (this.lastMessageCountWhenSessionEnded == null) this.lastMessageCountWhenSessionEnded = messages.length;
+                        this.sessionEndedBar.style.display = messages.length <= this.lastMessageCountWhenSessionEnded ? 'block' : 'none';
+                    } else {
+                        this.lastMessageCountWhenSessionEnded = null;
+                        this.sessionEndedBar.style.display = 'none';
+                    }
                 } else if (status === 'completed' || sessionEndedAt) {
                     this.addMessage('This session has ended.', 'system', null, true);
                 }
