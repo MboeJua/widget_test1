@@ -614,16 +614,16 @@
                     
                     if (response.ok) {
                         const data = await response.json();
-                        if (data?.messages && Array.isArray(data.messages)) {
-                            this.updateMessagesFromServer(data.messages, data.status, data.agent_joined_at, data.session_ended_at);
-                            this.lastMessageCount = data.messages.length;
-                        }
+                        const messages = Array.isArray(data?.messages) ? data.messages : [];
+                        this.updateMessagesFromServer(messages, data?.status, data?.agent_joined_at, data?.session_ended_at);
+                        this.lastMessageCount = messages.length;
                     }
                 } catch (error) {
                     console.error('Error fetching agent messages:', error);
                 }
             }
             
+            // Notifications driven by agent actions (Accept / Close Session in dashboard), not by visitor messages
             updateMessagesFromServer(messages, status, agentJoinedAt, sessionEndedAt) {
                 this.messageContainer.innerHTML = '';
                 let shownAgentJoined = false;
@@ -631,10 +631,7 @@
                 
                 messages.forEach(msg => {
                     const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
-                    if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
-                        this.addMessage('An agent has joined the conversation.', 'system');
-                        shownAgentJoined = true;
-                    } else if (!useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
+                    if (!useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
                         this.addMessage('An agent has joined the conversation.', 'system');
                         shownAgentJoined = true;
                     }
