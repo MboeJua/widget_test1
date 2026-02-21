@@ -287,6 +287,7 @@
                 this.lastMessageTime = now;
                 
                 this.isSending = true;
+                this.pendingUserMessage = message;
                 this.addMessage(message, 'user');
                 this.messageInput.value = '';
 
@@ -404,6 +405,7 @@
                                                 break;
                                             
                                             case 'complete':
+                                                this.pendingUserMessage = null;
                                                 if (data.stats && data.stats.conversation_id) {
                                                     conversationId = data.stats.conversation_id;
                                                     this.conversationId = conversationId;
@@ -626,11 +628,25 @@
             updateMessagesFromServer(messages, status, agentJoinedAt, sessionEndedAt) {
                 const wasNearBottom = this.messageContainer && (this.messageContainer.scrollHeight - this.messageContainer.scrollTop - this.messageContainer.clientHeight) < 120;
                 const hadNewMessages = messages.length > this.lastMessageCount;
+                if ((status === 'completed' || sessionEndedAt) && this.sessionEndedAfterIndex == null) {
+                    this.sessionEndedAfterIndex = messages.length;
+                }
+                if (this.pendingUserMessage) {
+                    const last = messages[messages.length - 1];
+                    if (!last || last.role !== 'user' || last.content !== this.pendingUserMessage) {
+                        messages = [...messages, { role: 'user', content: this.pendingUserMessage };
+                    } else {
+                        this.pendingUserMessage = null;
+                    }
+                }
                 this.messageContainer.innerHTML = '';
                 let shownAgentJoined = false;
                 const useExplicitAgentJoined = !!agentJoinedAt;
                 
-                messages.forEach(msg => {
+                messages.forEach((msg, i) => {
+                    if (i === this.sessionEndedAfterIndex && (status === 'completed' || sessionEndedAt)) {
+                        this.addMessage('This session has ended.', 'system', null, true);
+                    }
                     const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : 'agent';
                     if (useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
                         this.addMessage('An agent has joined the conversation.', 'system', null, true);
@@ -644,7 +660,7 @@
                 if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
                     this.addMessage('An agent has joined the conversation.', 'system', null, true);
                 }
-                if (status === 'completed' || sessionEndedAt) {
+                if (this.sessionEndedAfterIndex !== null && this.sessionEndedAfterIndex >= messages.length && (status === 'completed' || sessionEndedAt)) {
                     this.addMessage('This session has ended.', 'system', null, true);
                 }
                 if (this.messageContainer && (wasNearBottom || hadNewMessages)) {
