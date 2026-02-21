@@ -91,16 +91,6 @@
             align-self: flex-start;
         }
         
-        #rag-widget-d97e1386 .rag-session-ended-banner {
-            flex-shrink: 0;
-            padding: 8px 12px;
-            background: #fff3cd;
-            color: #856404;
-            font-size: 12px;
-            text-align: center;
-            border-top: 1px solid #ffeaa7;
-        }
-        
         .rag-widget-input {
             display: flex;
             padding: 10px;
@@ -215,7 +205,6 @@
     <div class="rag-widget-messages" id="rag-widget-d97e1386-messages">
         <div class="rag-message assistant">Hello! I'm ready to be of service.</div>
         </div>
-        <div class="rag-session-ended-banner" style="display: none; padding: 8px 12px; background: #fff3cd; color: #856404; font-size: 12px; text-align: center; border-top: 1px solid #ffeaa7;">This session has ended.</div>
         <div class="rag-widget-input">
         <input type="text" class="rag-message-input" placeholder="Type your message..." />
         <button class="rag-send-btn">Send</button>
@@ -251,7 +240,6 @@
                 this.lastMessageTime = 0; // Add timestamp tracking
                 this.pollingInterval = null; // Track polling interval
                 this.lastMessageCount = 0; // Track message count for polling
-                this.pendingUserMessages = []; // Optimistic user messages not yet on server
                 console.log('Widget initialized with API URL:', this.apiUrl);
                 console.log('Widget initialized with embed token:', this.embedToken);
                 this.init();
@@ -264,7 +252,6 @@
                     this.minimizeButton = this.widgetElement.querySelector('.rag-minimize-btn');
                     this.closeButton = this.widgetElement.querySelector('.rag-close-btn');
                     this.toggleButton = document.getElementById(this.widgetElementId + '-toggle-btn');
-                    this.sessionEndedBanner = this.widgetElement.querySelector('.rag-session-ended-banner');
                 
                     if (!this.messageContainer || !this.messageInput || !this.sendButton) {
                         console.error('Widget elements not found');
@@ -301,7 +288,6 @@
                 
                 this.isSending = true;
                 this.addMessage(message, 'user');
-                this.pendingUserMessages.push({ content: message, ts: Date.now() });
                 this.messageInput.value = '';
 
                 // Always send message to backend so it is saved and visible to the agent (even when human_taken)
@@ -616,6 +602,8 @@
             
             async fetchAgentMessages() {
                 if (!this.conversationId) return;
+                // Don't overwrite UI while waiting for stream (keeps typing indicator and message bubbles visible)
+                if (this.isSending) return;
                 
                 try {
                     const response = await fetch(`${this.apiUrl}/live-chat/widget/conversation/${this.conversationId}/messages`, {
