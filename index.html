@@ -11,10 +11,10 @@
      <!-- Raghim AI Chat Widget - Copy and paste this entire block into your HTML page -->
     <style>
 
-        #rag-widget-d97e1386.rag-widget-modern {
+        #rag-widget-7bfcc59a.rag-widget-modern {
             font-family: Inter, sans-serif;
             font-size: 14px;
-            background-color: #afcfde;
+            background-color: #F5F0E8;
             color: #1a202c;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -29,7 +29,7 @@
         }
         
         .rag-widget-header {
-            background-color: #91ff0a;
+            background-color: #2C5C61;
             color: white;
             padding: 10px;
             display: flex;
@@ -71,7 +71,7 @@
         }
         
         .rag-message.user {
-            background-color: #91ff0a;
+            background-color: #2C5C61;
             color: white;
             align-self: flex-end;
             margin-left: auto;
@@ -90,7 +90,7 @@
             border: 1px solid #e0e0e0;
             align-self: flex-start;
         }
-
+        
         .rag-message.system {
             background-color: transparent;
             color: #666;
@@ -101,7 +101,7 @@
             font-style: italic;
             max-width: 100%;
         }
-
+        
         .rag-widget-input {
             display: flex;
             padding: 10px;
@@ -117,7 +117,7 @@
         }
         
         .rag-widget-input button {
-            background-color: #91ff0a;
+            background-color: #2C5C61;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -126,14 +126,14 @@
             cursor: pointer;
         }
         
-        #rag-widget-d97e1386 .rag-widget-footer {
+        #rag-widget-7bfcc59a .rag-widget-footer {
             padding: 6px 12px;
             text-align: right;
             border-top: 1px solid #f0f0f0;
             background-color: #fafafa;
         }
         
-        #rag-widget-d97e1386 .rag-powered-by {
+        #rag-widget-7bfcc59a .rag-powered-by {
             font-size: 10px;
             color: #999;
             text-decoration: none;
@@ -141,17 +141,17 @@
             transition: color 0.2s;
         }
         
-        #rag-widget-d97e1386 .rag-powered-by:hover {
-            color: #91ff0a;
+        #rag-widget-7bfcc59a .rag-powered-by:hover {
+            color: #2C5C61;
         }
         
-        #rag-widget-d97e1386 .rag-powered-by strong {
+        #rag-widget-7bfcc59a .rag-powered-by strong {
             font-weight: 600;
             color: #666;
         }
         
-        #rag-widget-d97e1386 .rag-powered-by:hover strong {
-            color: #91ff0a;
+        #rag-widget-7bfcc59a .rag-powered-by:hover strong {
+            color: #2C5C61;
         }
         
         .rag-typing-indicator {
@@ -179,7 +179,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background-color: #91ff0a;
+            background-color: #2C5C61;
             color: white;
             border: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -210,21 +210,21 @@
     </style>
 
 <!-- Floating Toggle Button (shown when widget is minimized) -->
-<button id="rag-widget-d97e1386-toggle-btn" class="rag-widget-toggle-btn" style="display: flex;">
+<button id="rag-widget-7bfcc59a-toggle-btn" class="rag-widget-toggle-btn" style="display: flex;">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="currentColor"/>
     </svg>
 </button>
 
-<div id="rag-widget-d97e1386" class="rag-widget-modern" style="display: none;">
+<div id="rag-widget-7bfcc59a" class="rag-widget-modern" style="display: none;">
         <div class="rag-widget-header">
-            <h3>test_github</h3>
+            <h3>jake</h3>
             <div class="rag-widget-controls">
             <button class="rag-minimize-btn">−</button>
             <button class="rag-close-btn">×</button>
             </div>
         </div>
-    <div class="rag-widget-messages" id="rag-widget-d97e1386-messages">
+    <div class="rag-widget-messages" id="rag-widget-7bfcc59a-messages">
         <div class="rag-message assistant">Hello! I'm ready to be of service.</div>
         </div>
         <div class="rag-widget-input">
@@ -254,9 +254,9 @@
                     
                 // Use the configured backend URL with mixed content bypass support
                 this.apiUrl = "https://app.raghim.com/api";
-                this.embedToken = "OPR6xcGIXW1uosYVmzZbzGCTfq068BADcnkRLf9w7qI";
-                this.widgetId = "d97e1386-5016-4bd1-ba82-51b8cc0f9f0b";
-                this.features = {"show_sources": false, "enable_history": true, "show_typing_indicator": true, "enable_file_upload": false, "show_collection_switcher": false, "enable_feedback": true, "show_timestamps": false, "enable_search": true, "enable_handoff": true};
+                this.embedToken = "bifEP0g0FQRfvKFmDvC9dKLBfcm202aK1Qcj9RQlg9M";
+                this.widgetId = "7bfcc59a-5af7-4e05-b89d-762c8fa3fd75";
+                this.features = {"show_sources": true, "enable_history": true, "show_typing_indicator": true, "enable_file_upload": false, "show_collection_switcher": false, "enable_feedback": true, "show_timestamps": false, "enable_search": true, "enable_handoff": true};
                 this.conversationId = null; // Track conversation ID for history
                 this.isSending = false; // Add debouncing flag
                 this.lastMessageTime = 0; // Add timestamp tracking
@@ -680,10 +680,10 @@
         // Initialize widget when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
-                new RAGChatWidget('rag-widget-d97e1386');
+                new RAGChatWidget('rag-widget-7bfcc59a');
             });
         } else {
-            new RAGChatWidget('rag-widget-d97e1386');
+            new RAGChatWidget('rag-widget-7bfcc59a');
         }
         })();
         
