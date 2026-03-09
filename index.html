@@ -262,6 +262,7 @@
                 this.lastMessageTime = 0; // Add timestamp tracking
                 this.pollingInterval = null; // Track polling interval
                 this.lastMessageCount = 0; // Track message count for polling
+                this.lastStreamedContent = null; // Last assistant content we streamed (avoid poll overwriting)
                 console.log('Widget initialized with API URL:', this.apiUrl);
                 console.log('Widget initialized with embed token:', this.embedToken);
                 this.init();
@@ -307,6 +308,7 @@
                     return;
                 }
                 this.lastMessageTime = now;
+                this.lastStreamedContent = null;
                 
                 this.isSending = true;
                 this.addMessage(message, 'user');
@@ -509,6 +511,7 @@
                     
                     this.messageContainer.scrollTop = this.messageContainer.scrollHeight;
                 }
+                this.lastStreamedContent = (content && content.trim()) ? content.trim() : null;
             }
             
             removeStreamingMessage(messageId) {
@@ -656,8 +659,8 @@
                 this.messageContainer.innerHTML = '';
                 let shownAgentJoined = false;
                 const useExplicitAgentJoined = !!agentJoinedAt;
-                
-                messages.forEach(msg => {
+                const lastIdx = messages.length - 1;
+                messages.forEach((msg, i) => {
                     const role = msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'assistant' : msg.role === 'system' ? 'system' : 'agent';
                     if (useExplicitAgentJoined && role === 'agent' && !shownAgentJoined) {
                         this.addMessage('An agent has joined the conversation.', 'system', null, true);
@@ -666,7 +669,12 @@
                         this.addMessage('An agent has joined the conversation.', 'system', null, true);
                         shownAgentJoined = true;
                     }
-                    this.addMessage(msg.content, role, null, true);
+                    let content = msg.content;
+                    if (role === 'assistant' && i === lastIdx && this.lastStreamedContent && (content || '').trim() !== this.lastStreamedContent) {
+                        content = this.lastStreamedContent;
+                        this.lastStreamedContent = null;
+                    }
+                    this.addMessage(content, role, null, true);
                 });
                 if (useExplicitAgentJoined && agentJoinedAt && !shownAgentJoined) {
                     this.addMessage('An agent has joined the conversation.', 'system', null, true);
